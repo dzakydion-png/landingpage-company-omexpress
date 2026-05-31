@@ -1,11 +1,12 @@
-<header id="main-header" class="site-header" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;">
+<header id="main-header" class="site-header" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;border-bottom: 2px solid #2596be; 
+    box-shadow: 0 4px 15px rgba(37, 150, 190, 0.5);">
     <!-- Main Navigation -->
-    <nav style="background: #001f5c;">
+    <nav style="background: #ffffff; ...">
         <div style="max-width: 1280px; margin: 0 auto; padding: 0.875rem 1rem; display: flex; align-items: center; justify-content: space-between;">
             <!-- Logo -->
             <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none;">
-                <img src="{{ asset('img/logo.png') }}" style="height: 48px; background: white; padding: 4px; border-radius: 4px;" alt="Logo" onerror="this.style.display='none'" />
-                <span style="font-size: 1.5rem; font-weight: 800; color: #ffffff; letter-spacing: -0.5px;">OMEXPRESS</span>
+                <img src="{{ asset('assets/Logo OmExpress (1).png') }}" style="height: 48px; background: white; padding: 4px; border-radius: 4px;" alt="Logo"  />
+                <!-- <img src="{{ asset('assets/Logo OmExpress (1).png') }}" alt="Logo OmExpress" style="height: 40px; width: auto;"> -->
             </a>
 
             <!-- Desktop Navigation -->
@@ -170,43 +171,47 @@
     border-left: 1px solid rgba(255,255,255,0.2);
 }
 
+/* Mengatur warna asli brand */
+/* Container untuk ikon agar memiliki background */
 .social-link {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    color: rgba(255,255,255,0.8);
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
+    width: 35px; /* Sesuaikan ukuran lingkaran */
+    height: 35px;
+    background: #f0f0f0; /* Warna background abu-abu muda */
+    border-radius: 50%; /* Membuat menjadi lingkaran sempurna */
+    margin-left: 10px;
+    transition: all 0.3s ease;
     text-decoration: none;
-    font-size: 0.85rem;
-    transition: all 0.2s;
 }
 
+/* Mengubah warna icon saat di dalam circle */
+.social-link .fa-facebook-f { color: #1877F2; }
+.social-link .fa-instagram { color: #E1306C; }
+.social-link .fa-whatsapp { color: #25D366; }
+
+/* Efek saat kursor diarahkan (Hover) */
 .social-link:hover {
-    color: #ffffff;
-    background: #2596be;
-    transform: translateY(-2px);
+    background:#f0f0f0; /* Background berubah menjadi biru tua saat hover */
+    transform: translateY(-3px); /* Ikon sedikit naik ke atas */
 }
 
-.social-link.whatsapp:hover {
-    background: #25D366;
-}
+
 
 .nav-link {
-    color: rgba(255,255,255,0.9);
+    color: rgba(19, 12, 72, 0.9);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.9rem;
     padding: 0.625rem 0.875rem;
     transition: all 0.2s;
     position: relative;
-    border-radius: 4px;
+    border-radius: 10px;
 }
 
 .nav-link:hover {
-    color: #ffffff;
+    color:#2596be;
     background: rgba(255,255,255,0.1);
 }
 
@@ -228,7 +233,7 @@
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    color: rgba(255,255,255,0.9);
+    color: rgba(19, 12, 72, 0.9);
     padding: 0.625rem 0.875rem;
     position: relative;
     border-radius: 4px;
@@ -236,7 +241,7 @@
 }
 
 .dropdown-toggle:hover {
-    color: #ffffff;
+    color:#2596be;
     background: rgba(255,255,255,0.1);
 }
 
@@ -305,13 +310,13 @@
     border: none;
     padding: 0.625rem;
     cursor: pointer;
-    color: #ffffff;
+    color: #001f5c;;
     border-radius: 8px;
     transition: background 0.2s;
 }
 
 .hamburger-btn:hover {
-    background: rgba(255,255,255,0.2);
+    background: rgba(0, 31, 92, 0.2);
 }
 
 /* Mobile Overlay */
@@ -482,7 +487,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem; /* Samakan gap dengan desktop */
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #e5e7eb;
@@ -492,24 +497,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    color: #001f5c;
-    background: #f0f4f8;
-    border-radius: 50%;
+    width: 35px; /* Sesuaikan ukuran dengan .social-link desktop */
+    height: 35px;
+    background: #f0f4f8; /* Background light blue */
+    border-radius: 50%; /* Membuat lingkaran */
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 0.85rem; /* Samakan font size */
     transition: all 0.2s;
 }
 
+.mobile-social-link .fa-facebook-f { color: #1877F2; }
+.mobile-social-link .fa-instagram { color: #E1306C; }
+.mobile-social-link .fa-whatsapp { color: #25D366; }
+
 .mobile-social-link:hover {
     color: #ffffff;
-    background: #2596be;
+    background: #f0f4f8; /* Warna hover biru */
     transform: translateY(-2px);
-}
-
-.mobile-social-link.whatsapp:hover {
-    background: #25D366;
 }
 
 /* Responsive */

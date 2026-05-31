@@ -23,5 +23,6 @@ yarn-error.log
 /.zed
 public/assets/*.mp4
 /doc_fitur.md
-/MANUAL_BOOK.md
 /DOKUMEN_JALANKAN_DAN_FITUR.md
+.env.example
+/SCOPE-LANDINGPAGE-COMPANY-PROFILE.md

@@ -1,6 +1,6 @@
 @extends('home_company.layouts.main')
 
-@section('title', 'Layanan Kami - Om Express')
+@section('title', 'Layanan Kami')
 
 @section('content')
 <!-- Hero Section -->

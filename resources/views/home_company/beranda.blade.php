@@ -7,7 +7,7 @@
 <section id="hero-section" style="position: relative; height: 100vh; overflow: hidden;">
     <!-- Video Background -->
     <video autoplay muted loop playsinline style="position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); object-fit: cover; z-index: 1;">
-        <source src="{{ asset('assets/vid_omexpress.mp4') }}" type="video/mp4">
+        <source src="https://res.cloudinary.com/dbsrkdji8/video/upload/v1780236174/FILPEN_OKI_-_revisi_retake_1_kg4x4s.mp4" type="video/mp4">
     </video>
 
 
@@ -220,26 +220,30 @@
         </div>
 
         <!-- Partners Logo Grid -->
-        <div class="partners-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;">
-            @php
-            $partners = [
-                ['name' => 'JNE', 'img' => 'jne.jpg', 'desc' => 'Jalur Nugraha Ekakurir'],
-                ['name' => 'JNE Express', 'img' => 'jne_express.jpg', 'desc' => 'Layanan Express'],
-                ['name' => 'J&T Express', 'img' => 'jnt.jpg', 'desc' => 'Express Your Online Business'],
-                ['name' => 'Lion Parcel', 'img' => 'lion_parcel.png', 'desc' => 'We Deliver Happiness'],
-                ['name' => 'Pos Indonesia', 'img' => 'posind.jpg', 'desc' => 'Untuk Indonesia'],
-            ];
-            @endphp
+        <div class="logo-marquee-container" style="overflow: hidden; width: 100%; padding: 20px 0;">
+    <div class="logo-track" style="display: flex; gap: 40px; animation: scroll 40s linear infinite; width: max-content;">
+        @php
+        $partners = [
+            ['name' => 'JNE', 'img' => 'jne.jpg'],
+            ['name' => 'JNE Express', 'img' => 'jne_express.jpg'],
+            ['name' => 'J&T Express', 'img' => 'jnt.jpg'],
+            ['name' => 'Lion Parcel', 'img' => 'lion_parcel.png'],
+            ['name' => 'Pos Indonesia', 'img' => 'posind.jpg'],
+        ];
+        @endphp
+        
+        {{-- List logo (diulang 2x agar animasi mulus tanpa jeda) --}}
+        @for($i = 0; $i < 5; $i++)
             @foreach($partners as $partner)
-            <div class="partner-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; transition: all 0.3s ease; cursor: pointer; min-width: 180px; flex: 0 1 auto;">
-                <div style="height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
-                    <img src="{{ asset('assets/' . $partner['img']) }}" alt="{{ $partner['name'] }}" style="max-height: 55px; max-width: 130px; object-fit: contain; transition: all 0.3s;">
+            <div class="partner-card" style="background: white; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); text-align: center; min-width: 180px; flex: 0 0 auto;">
+                <div style="height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="{{ asset('assets/' . $partner['img']) }}" alt="{{ $partner['name'] }}" style="max-height: 55px; max-width: 130px; object-fit: contain;">
                 </div>
-                <h4 style="font-weight: 700; color: #001f5c; font-size: 0.95rem; margin-bottom: 0.25rem;">{{ $partner['name'] }}</h4>
-                <p style="font-size: 0.75rem; color: #888888; margin: 0;">{{ $partner['desc'] }}</p>
             </div>
             @endforeach
-        </div>
+        @endfor
+    </div>
+</div>
     </div>
 </section>
 
@@ -482,6 +486,27 @@
         transform: scale(2);
         opacity: 0;
     }
+}
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        /* Geser tepat 50% dari total track agar transisi ke copy-an logo berikutnya mulus */
+        transform: translateX(-50%);
+    }
+}
+
+/* Opsional: Berhenti saat di-hover */
+.logo-track:hover {
+    display: flex;
+    gap: 40px; 
+    animation: scroll 40s linear infinite; /* Kuncinya ada di 'linear' */
+    width: max-content;
+    will-change: transform;
+}
+.logo-track {
+    will-change: transform;
 }
 
 /* Services Grid - 4 columns on desktop, 2x2 on mobile */

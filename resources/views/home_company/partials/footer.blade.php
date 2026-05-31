@@ -191,40 +191,45 @@
                 </ul>
             </div>
 
+            <div>
+                <h3 style="color: #ffffff; font-weight: 700; font-size: 1.125rem; margin-bottom: 1.5rem; position: relative; padding-bottom: 0.75rem;">
+                    Lokasi Kami
+                    <span style="position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; background: #2596be; border-radius: 2px;"></span>
+                </h3>
+                <div style="width: 100%; height: 200px; border-radius: 8px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6104.001168857197!2d106.96806915515134!3d-6.136792034375994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698ba6929dc15d%3A0x6287329a2907599c!2sWAREHOUSE%20OMKIRIM%20-%20PCI%20EXPRESS%20%7C%20Ekspedisi%20Jakarta%2C%20Jasa%20Trucking%20Jakarta%2C%20Ekspedisi%20Cargo%20Jakarta.!5e0!3m2!1sid!2sid!4v1780230865833!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+            <div>
+
             <!-- Contact Info -->
             <div>
                 <h3 style="color: #ffffff; font-weight: 700; font-size: 1.125rem; margin-bottom: 1.5rem; position: relative; padding-bottom: 0.75rem;">
-                    Hubungi Kami
-                    <span style="position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; background: #2596be; border-radius: 2px;"></span>
-                </h3>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    <li style="margin-bottom: 1.25rem; display: flex; align-items: flex-start;">
-                        <div style="width: 42px; height: 42px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
-                            <i class="fas fa-map-marker-alt" style="color: #2596be; font-size: 1rem;"></i>
-                        </div>
-                        <div>
-                            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem; font-weight: 500;">Alamat Kantor</p>
-                            <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0; font-size: 0.85rem; line-height: 1.5;">Jl. Inspeksi Banjir Kanal Timur, RT.4/RW.8, Rorotan, Kec. Cilincing, Jkt Utara,<br>Daerah Khusus Ibukota Jakarta 14140</p>
-                        </div>
-                    </li>
-                    <li style="margin-bottom: 1.25rem; display: flex; align-items: flex-start;">
-                        <div style="width: 42px; height: 42px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
-                            <i class="fas fa-phone-alt" style="color: #2596be; font-size: 1rem;"></i>
-                        </div>
-                        <div>
-                            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem; font-weight: 500;">Telepon / WhatsApp</p>
-                            <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0; font-size: 0.85rem; line-height: 1.5;">0811 8089 2925</p>
-                        </div>
-                    </li>
-                    <li style="margin-bottom: 1.25rem; display: flex; align-items: flex-start;">
-                        <div style="width: 42px; height: 42px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
-                            <i class="fas fa-envelope" style="color: #2596be; font-size: 1rem;"></i>
-                        </div>
-                        <div>
-                            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 0.9rem; font-weight: 500;">Email</p>
-                            <p style="color: rgba(255,255,255,0.7); margin: 0.25rem 0 0; font-size: 0.85rem; line-height: 1.5;">info@omexpress.com<br>cs@omexpress.com</p>
-                        </div>
-                    </li>
+        Hubungi Kami
+        <span style="position: absolute; bottom: 0; left: 0; width: 40px; height: 3px; background: #2596be; border-radius: 2px;"></span>
+    </h3>
+    <ul style="list-style: none; padding: 0; margin: 0;">
+        <li style="margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 12px;">
+            <i class="fas fa-map-marker-alt" style="color: #2596be; margin-top: 4px;"></i>
+            <span style="color: rgba(255,255,255,0.9); font-size: 0.85rem; line-height: 1.5;">
+                Jl. Inspeksi Banjir Kanal Timur, Rorotan, Cilincing, Jakarta Utara
+            </span>
+        </li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-phone-alt" style="color: #2596be;"></i>
+            <span style="color: rgba(255,255,255,0.9); font-size: 0.85rem;">0811 8089 2925</span>
+        </li>
+        <li style="margin-bottom: 1rem; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-envelope" style="color: #2596be;"></i>
+            <span style="color: rgba(255,255,255,0.9); font-size: 0.85rem;">info@omexpress.com</span>
+        </li>
                     {{-- <li style="display: flex; align-items: flex-start;">
                         <div style="width: 42px; height: 42px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; flex-shrink: 0;">
                             <i class="fas fa-clock" style="color: #2596be; font-size: 1rem;"></i>
@@ -265,30 +270,23 @@
 <style>
 /* Footer Responsive */
 @media (max-width: 768px) {
-    footer [style*="grid-template-columns: repeat(auto-fit"] {
+    /* Mengubah grid menjadi 1 kolom di HP agar tidak terlalu sempit */
+    footer > div > div {
         grid-template-columns: 1fr !important;
+        text-align: center;
     }
-
-    footer [style*="grid-template-columns: 1fr 1fr"] {
-        grid-template-columns: 1fr !important;
-    }
-
-    section [style*="display: flex"][style*="gap: 4rem"] {
-        gap: 2rem !important;
-    }
-
-    section [style*="display: flex"][style*="gap: 3rem"] {
-        gap: 1.5rem !important;
+    
+    /* Mengatur ulang posisi icon/konten agar rata tengah di HP */
+    footer ul li {
+        justify-content: center;
     }
 }
 
-@media (max-width: 480px) {
-    section [style*="font-size: 2.5rem"] {
-        font-size: 1.75rem !important;
-    }
-
-    section [style*="font-size: 2rem"] {
-        font-size: 1.5rem !important;
+/* Mengatur agar container footer tidak terlalu lebar di layar besar */
+@media (min-width: 1024px) {
+    footer > div {
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
     }
 }
 </style>
