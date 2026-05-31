@@ -29,21 +29,17 @@
     <div style="max-width: 1200px; margin: 0 auto;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
             @forelse ($articles as $article)
-                <article style="background: white; border-radius: 24px; padding: 1.75rem; border: 1px solid #e2e8f0; box-shadow: 0 16px 40px rgba(15,23,42,0.06); display: flex; flex-direction: column; gap: 1rem;">
-                    <div style="display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                        <span style="display: inline-flex; align-items: center; background: #eff6ff; color: #1d4ed8; padding: 0.45rem 0.8rem; border-radius: 9999px; font-size: 0.82rem; font-weight: 700;">{{ $article['category'] }}</span>
-                        <span style="color: #64748b; font-size: 0.9rem;">{{ $article['date'] }}</span>
-                    </div>
-                    <div>
-                        <h2 style="margin: 0 0 0.75rem; font-size: 1.35rem; line-height: 1.35; color: #001f5c; font-weight: 800;">
-                            <a href="{{ route('artikel.show', $article['slug']) }}" style="color: inherit; text-decoration: none;">{{ $article['title'] }}</a>
+                <article style="background: white; border-radius: 18px; border: 1px solid #e2e8f0; box-shadow: 0 12px 30px rgba(15,23,42,0.06); overflow: hidden; display: flex; flex-direction: column;">
+                    <a href="{{ route('artikel.show', $article['slug']) }}" style="display: block; text-decoration: none;">
+                        <img src="{{ $article['thumbnail'] }}" alt="{{ $article['title'] }}" style="width: 100%; height: 200px; object-fit: cover; display: block;">
+                    </a>
+                    <div style="padding: 1.25rem 1.4rem 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <h2 style="margin: 0; font-size: 1.2rem; line-height: 1.35; color: #001f5c; font-weight: 800;">
+                            <a href="{{ route('artikel.show', $article['slug']) }}" style="color: inherit; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#2596be'" onmouseout="this.style.color='#001f5c'">{{ $article['title'] }}</a>
                         </h2>
-                        <p style="margin: 0; color: #475569; line-height: 1.8;">{{ $article['excerpt'] }}</p>
+                        <p style="margin: 0; color: #64748b; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{{ $article['excerpt'] }}</p>
                     </div>
-                    <div style="margin-top: auto; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                        <a href="{{ route('tracking') }}" class="btn-jne-outline" style="text-decoration: none;">Cek Tracking</a>
-                        <a href="{{ route('cek_ongkir') }}" class="btn-jne-red" style="text-decoration: none;">Cek Ongkir</a>
-                    </div>
+                    <div style="padding: 0 1.4rem 1.3rem; margin-top: auto; color: #94a3b8; font-size: 0.85rem;">{{ $article['date'] }} • Tidak ada komentar</div>
                 </article>
             @empty
                 <div style="grid-column: 1 / -1; background: white; border-radius: 24px; padding: 1.75rem; border: 1px solid #e2e8f0; box-shadow: 0 16px 40px rgba(15,23,42,0.06); color: #475569; line-height: 1.8;">
