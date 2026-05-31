@@ -18,6 +18,7 @@ Route::get('/cek-ongkir', [HomeController::class, 'cekOngkir'])->name('cek_ongki
 Route::get('/cek-resi', [HomeController::class, 'cekResi'])->name('cek_resi');
 Route::get('/ongkir-6-kota', [HomeController::class, 'ongkir6Kota'])->name('ongkir_6_kota');
 Route::get('/artikel', [HomeController::class, 'artikel'])->name('artikel');
+Route::get('/artikel/{slug}', [HomeController::class, 'artikelDetail'])->name('artikel.show');
 Route::get('/galeri', [HomeController::class, 'galeri'])->name('galeri');
 Route::get('/kontak', [HomeController::class, 'kontak'])->name('kontak');
 

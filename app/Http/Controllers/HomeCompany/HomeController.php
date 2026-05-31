@@ -154,6 +154,7 @@ class HomeController extends Controller
             ->map(function (Article $article): array {
                 return [
                     'title' => $article->title,
+                    'slug' => $article->slug,
                     'category' => $article->category ?? 'Artikel',
                     'date' => $article->published_at?->translatedFormat('d F Y') ?? $article->created_at->translatedFormat('d F Y'),
                     'excerpt' => $article->excerpt,
@@ -167,6 +168,19 @@ class HomeController extends Controller
         ];
 
         return view('home_company.artikel.index', compact('articles', 'highlights'));
+    }
+
+    /**
+     * Halaman Detail Artikel
+     */
+    public function artikelDetail(string $slug)
+    {
+        $article = Article::query()
+            ->where('slug', $slug)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        return view('home_company.artikel.show', compact('article'));
     }
 
     /**

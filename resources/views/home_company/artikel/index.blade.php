@@ -35,7 +35,9 @@
                         <span style="color: #64748b; font-size: 0.9rem;">{{ $article['date'] }}</span>
                     </div>
                     <div>
-                        <h2 style="margin: 0 0 0.75rem; font-size: 1.35rem; line-height: 1.35; color: #001f5c; font-weight: 800;">{{ $article['title'] }}</h2>
+                        <h2 style="margin: 0 0 0.75rem; font-size: 1.35rem; line-height: 1.35; color: #001f5c; font-weight: 800;">
+                            <a href="{{ route('artikel.show', $article['slug']) }}" style="color: inherit; text-decoration: none;">{{ $article['title'] }}</a>
+                        </h2>
                         <p style="margin: 0; color: #475569; line-height: 1.8;">{{ $article['excerpt'] }}</p>
                     </div>
                     <div style="margin-top: auto; display: flex; gap: 0.75rem; flex-wrap: wrap;">

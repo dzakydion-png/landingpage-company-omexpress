@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') - OmExpress</title>
+    <title>{{ trim($__env->yieldContent('meta_title')) !== '' ? $__env->yieldContent('meta_title') : $__env->yieldContent('title') }} - OmExpress</title>
+    @hasSection('meta_description')
+        <meta name="description" content="@yield('meta_description')">
+    @endif
+    @hasSection('meta_keywords')
+        <meta name="keywords" content="@yield('meta_keywords')">
+    @endif
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
