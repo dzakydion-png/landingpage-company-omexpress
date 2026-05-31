@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ArticleController extends Controller
 {
@@ -27,15 +28,19 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', 'alpha_dash:ascii', Rule::unique('articles', 'slug')],
             'category' => ['nullable', 'string', 'max:120'],
             'excerpt' => ['required', 'string'],
             'content' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'max:255'],
+            'meta_title' => ['nullable', 'string', 'max:60'],
+            'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
             'is_published' => ['nullable'],
         ]);
 
-        $slug = $this->makeUniqueSlug($validated['title']);
+        $slug = $this->makeUniqueSlug($validated['slug'] ?? null, $validated['title']);
 
         Article::create([
             'title' => $validated['title'],
@@ -44,6 +49,9 @@ class ArticleController extends Controller
             'excerpt' => $validated['excerpt'],
             'content' => $validated['content'] ?? null,
             'cover_image' => $validated['cover_image'] ?? null,
+            'meta_title' => $validated['meta_title'] ?? null,
+            'meta_description' => $validated['meta_description'] ?? null,
+            'meta_keywords' => $validated['meta_keywords'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
             'is_published' => $request->boolean('is_published'),
         ]);
@@ -60,18 +68,19 @@ class ArticleController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', 'alpha_dash:ascii', Rule::unique('articles', 'slug')->ignore($article->id)],
             'category' => ['nullable', 'string', 'max:120'],
             'excerpt' => ['required', 'string'],
             'content' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'max:255'],
+            'meta_title' => ['nullable', 'string', 'max:60'],
+            'meta_description' => ['nullable', 'string', 'max:160'],
+            'meta_keywords' => ['nullable', 'string', 'max:255'],
             'published_at' => ['nullable', 'date'],
             'is_published' => ['nullable'],
         ]);
 
-        $slug = $article->slug;
-        if ($validated['title'] !== $article->title) {
-            $slug = $this->makeUniqueSlug($validated['title'], $article->id);
-        }
+        $slug = $this->makeUniqueSlug($validated['slug'] ?? null, $validated['title'], $article->id);
 
         $article->update([
             'title' => $validated['title'],
@@ -80,6 +89,9 @@ class ArticleController extends Controller
             'excerpt' => $validated['excerpt'],
             'content' => $validated['content'] ?? null,
             'cover_image' => $validated['cover_image'] ?? null,
+            'meta_title' => $validated['meta_title'] ?? null,
+            'meta_description' => $validated['meta_description'] ?? null,
+            'meta_keywords' => $validated['meta_keywords'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
             'is_published' => $request->boolean('is_published'),
         ]);
@@ -94,9 +106,9 @@ class ArticleController extends Controller
         return redirect()->route('admin.articles.index')->with('status', 'Artikel berhasil dihapus.');
     }
 
-    private function makeUniqueSlug(string $title, ?int $ignoreId = null): string
+    private function makeUniqueSlug(?string $preferredSlug, string $fallbackTitle, ?int $ignoreId = null): string
     {
-        $base = Str::slug($title);
+        $base = Str::slug($preferredSlug ?: $fallbackTitle);
         $slug = $base !== '' ? $base : Str::random(6);
         $counter = 2;
 

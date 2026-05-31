@@ -16,6 +16,9 @@ class Article extends Model
         'excerpt',
         'content',
         'cover_image',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
         'published_at',
         'is_published',
     ];
