@@ -39,7 +39,9 @@
                         </h2>
                         <p style="margin: 0; color: #64748b; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{{ $article['excerpt'] }}</p>
                     </div>
-                    <div style="padding: 0 1.4rem 1.3rem; margin-top: auto; color: #94a3b8; font-size: 0.85rem;">{{ $article['date'] }} • Tidak ada komentar</div>
+                    <div style="padding: 0 1.4rem 1.3rem; margin-top: auto; color: #94a3b8; font-size: 0.85rem;">
+                        {{ $article['date'] }} • {{ $article['category'] }} • Tidak ada komentar
+                    </div>
                 </article>
             @empty
                 <div style="grid-column: 1 / -1; background: white; border-radius: 24px; padding: 1.75rem; border: 1px solid #e2e8f0; box-shadow: 0 16px 40px rgba(15,23,42,0.06); color: #475569; line-height: 1.8;">

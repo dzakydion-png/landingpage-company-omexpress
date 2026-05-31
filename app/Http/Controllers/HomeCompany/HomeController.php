@@ -158,7 +158,7 @@ class HomeController extends Controller
                     'category' => $article->category ?? 'Artikel',
                     'date' => $article->published_at?->translatedFormat('d F Y') ?? $article->created_at->translatedFormat('d F Y'),
                     'excerpt' => $article->excerpt,
-                    'thumbnail' => $article->cover_image ?: asset('img/logistic.jpg'),
+                    'thumbnail' => $article->cover_image ?: asset('assets/Logo OmExpress (1).png'),
                 ];
             })->values();
 
