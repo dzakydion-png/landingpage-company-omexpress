@@ -145,12 +145,14 @@ class HomeController extends Controller
      */
     public function artikel()
     {
-        $articles = Article::query()
+        $paginator = Article::query()
             ->where('is_published', true)
             ->whereNotNull('published_at')
             ->orderByDesc('published_at')
-            ->limit(3)
-            ->get()
+            ->paginate(6)
+            ->withQueryString();
+
+        $articles = $paginator->getCollection()
             ->map(function (Article $article): array {
                 return [
                     'title' => $article->title,
@@ -168,7 +170,7 @@ class HomeController extends Controller
             'Tips logistik yang praktis dan mudah diterapkan',
         ];
 
-        return view('home_company.artikel.index', compact('articles', 'highlights'));
+        return view('home_company.artikel.index', compact('articles', 'highlights', 'paginator'));
     }
 
     /**

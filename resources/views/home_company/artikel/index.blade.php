@@ -27,7 +27,7 @@
 
 <section style="padding: 4rem 1rem; background: #f8fafc;">
     <div style="max-width: 1200px; margin: 0 auto;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div data-article-grid style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem;">
             @forelse ($articles as $article)
                 <article style="background: white; border-radius: 18px; border: 1px solid #e2e8f0; box-shadow: 0 12px 30px rgba(15,23,42,0.06); overflow: hidden; display: flex; flex-direction: column;">
                     <a href="{{ route('artikel.show', $article['slug']) }}" style="display: block; text-decoration: none;">
@@ -49,8 +49,78 @@
                 </div>
             @endforelse
         </div>
+
+        @if ($paginator->hasPages())
+            @php
+                $current = $paginator->currentPage();
+                $last = $paginator->lastPage();
+                $window = 1;
+                $start = max(2, $current - $window);
+                $end = min($last - 1, $current + $window);
+            @endphp
+            <div style="margin-top: 3rem; display: flex; justify-content: center;">
+                <nav style="display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                    @if ($paginator->onFirstPage())
+                        <span style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #94a3b8;">&laquo; Previous</span>
+                    @else
+                        <a href="{{ $paginator->previousPageUrl() }}" style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-decoration: none;">&laquo; Previous</a>
+                    @endif
+
+                    @if ($last >= 1)
+                        @if ($current === 1)
+                            <span style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #2596be; background: #2596be; color: white; font-weight: 700;">1</span>
+                        @else
+                            <a href="{{ $paginator->url(1) }}" style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-decoration: none;">1</a>
+                        @endif
+                    @endif
+
+                    @if ($start > 2)
+                        <span style="padding: 0.5rem 0.75rem; color: #94a3b8;">&hellip;</span>
+                    @endif
+
+                    @for ($page = $start; $page <= $end; $page++)
+                        @if ($page === $current)
+                            <span style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #2596be; background: #2596be; color: white; font-weight: 700;">{{ $page }}</span>
+                        @else
+                            <a href="{{ $paginator->url($page) }}" style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-decoration: none;">{{ $page }}</a>
+                        @endif
+                    @endfor
+
+                    @if ($end < $last - 1)
+                        <span style="padding: 0.5rem 0.75rem; color: #94a3b8;">&hellip;</span>
+                    @endif
+
+                    @if ($last > 1)
+                        @if ($current === $last)
+                            <span style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #2596be; background: #2596be; color: white; font-weight: 700;">{{ $last }}</span>
+                        @else
+                            <a href="{{ $paginator->url($last) }}" style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-decoration: none;">{{ $last }}</a>
+                        @endif
+                    @endif
+
+                    @if ($paginator->hasMorePages())
+                        <a href="{{ $paginator->nextPageUrl() }}" style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; text-decoration: none;">Next &raquo;</a>
+                    @else
+                        <span style="padding: 0.5rem 0.9rem; border-radius: 8px; border: 1px solid #e2e8f0; color: #94a3b8;">Next &raquo;</span>
+                    @endif
+                </nav>
+            </div>
+        @endif
     </div>
 </section>
+
+<style>
+    @media (max-width: 1024px) {
+        [data-article-grid] {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
+    @media (max-width: 640px) {
+        [data-article-grid] {
+            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        }
+    }
+</style>
 
 <section style="padding: 0 1rem 4rem; background: #f8fafc;">
     <div style="max-width: 1200px; margin: 0 auto;">
