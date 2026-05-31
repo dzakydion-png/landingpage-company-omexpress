@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\HomeCompany;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\ShippingRate;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -64,9 +66,34 @@ class HomeController extends Controller
      */
     public function tracking()
     {
-        return view('home_company.coming_soon', [
-            'title' => 'Tracking'
-        ]);
+        $trackingSteps = [
+            [
+                'title' => 'Resi Diterima',
+                'desc' => 'Nomor resi sudah terdaftar di sistem dan sedang divalidasi.',
+                'status' => 'done',
+                'time' => '08:15',
+            ],
+            [
+                'title' => 'Dalam Proses Pickup',
+                'desc' => 'Paket dijadwalkan untuk diambil oleh tim operasional.',
+                'status' => 'done',
+                'time' => '10:40',
+            ],
+            [
+                'title' => 'Menuju Sortir Center',
+                'desc' => 'Paket dibawa ke pusat sortir untuk proses berikutnya.',
+                'status' => 'current',
+                'time' => '12:30',
+            ],
+            [
+                'title' => 'Siap Dikirim',
+                'desc' => 'Paket akan diteruskan ke tujuan akhir setelah sortir selesai.',
+                'status' => 'pending',
+                'time' => 'Estimasi sore ini',
+            ],
+        ];
+
+        return view('home_company.tracking.index', compact('trackingSteps'));
     }
 
     /**
@@ -74,9 +101,23 @@ class HomeController extends Controller
      */
     public function cekOngkir()
     {
-        return view('home_company.coming_soon', [
-            'title' => 'Cek Ongkir'
-        ]);
+        $rates = ShippingRate::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
+
+        $rateCards = $rates->map(function (ShippingRate $rate): array {
+            return [
+                'area' => $rate->route_label,
+                'price' => $rate->price_text,
+                'note' => $rate->note,
+            ];
+        })->values();
+
+        $serviceOptions = $rates->pluck('service_type')->filter()->unique()->values();
+
+        return view('home_company.cek_ongkir.index', compact('rateCards', 'serviceOptions'));
     }
 
     /**
@@ -104,9 +145,28 @@ class HomeController extends Controller
      */
     public function artikel()
     {
-        return view('home_company.coming_soon', [
-            'title' => 'Artikel'
-        ]);
+        $articles = Article::query()
+            ->where('is_published', true)
+            ->whereNotNull('published_at')
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get()
+            ->map(function (Article $article): array {
+                return [
+                    'title' => $article->title,
+                    'category' => $article->category ?? 'Artikel',
+                    'date' => $article->published_at?->translatedFormat('d F Y') ?? $article->created_at->translatedFormat('d F Y'),
+                    'excerpt' => $article->excerpt,
+                ];
+            })->values();
+
+        $highlights = [
+            'Edukasi pengiriman untuk pelanggan dan bisnis',
+            'Update layanan OMEXPRESS dan operasional',
+            'Tips logistik yang praktis dan mudah diterapkan',
+        ];
+
+        return view('home_company.artikel.index', compact('articles', 'highlights'));
     }
 
     /**
