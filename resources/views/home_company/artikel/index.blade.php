@@ -58,8 +58,8 @@
     <div style="max-width: 1200px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #001f5c 0%, #0f4c81 100%); color: white; border-radius: 24px; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; align-items: center;">
             <div>
-                <div style="font-size: 1.35rem; font-weight: 800;">Ingin artikel baru?</div>
-                <p style="margin: 0.5rem 0 0; color: rgba(255,255,255,0.8); line-height: 1.7;">Tambahkan konten edukasi baru untuk membantu pelanggan memahami layanan pengiriman Anda.</p>
+                <div style="font-size: 1.35rem; font-weight: 800;">Dapatkan Pelayanan dan Penawaran Terbaik Dari Kami Untuk Anda</div>
+                <p style="margin: 0.5rem 0 0; color: rgba(255,255,255,0.8); line-height: 1.7;">Kami Akan Berusaha Semaksimal Mungkin Menjadi Partner Terbaik Untuk Bisnis Anda.</p>
             </div>
             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
                 <a href="{{ route('home') }}" class="btn-jne-outline" style="text-decoration: none; color: white; border-color: rgba(255,255,255,0.4);">Kembali ke Beranda</a>
