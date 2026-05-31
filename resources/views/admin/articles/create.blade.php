@@ -8,7 +8,7 @@
         <a class="btn ghost" href="{{ route('admin.articles.index') }}">Kembali</a>
     </div>
 
-    <form class="card form-grid" method="post" action="{{ route('admin.articles.store') }}">
+    <form class="card form-grid" method="post" action="{{ route('admin.articles.store') }}" enctype="multipart/form-data">
         @csrf
         <div>
             <label for="title">Judul</label>
@@ -48,8 +48,21 @@
             <div class="muted" style="margin-top: 0.35rem;">Maks 160 karakter. <span id="meta-description-count">0</span>/160</div>
         </div>
         <div>
+            <label>Preview SEO</label>
+            <div style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; background: #f9fafb;">
+                <div id="seo-preview-title" style="color: #1d4ed8; font-weight: 700; margin-bottom: 0.25rem;">Judul Artikel</div>
+                <div id="seo-preview-url" style="color: #15803d; font-size: 0.9rem; margin-bottom: 0.35rem;">{{ url('/') }}/artikel/slug-anda</div>
+                <div id="seo-preview-description" style="color: #4b5563; font-size: 0.9rem;">Deskripsi singkat artikel akan tampil di sini.</div>
+            </div>
+        </div>
+        <div>
             <label for="cover_image">URL Gambar</label>
             <input id="cover_image" name="cover_image" type="text" value="{{ old('cover_image') }}">
+        </div>
+        <div>
+            <label for="cover_image_upload">Upload Gambar</label>
+            <input id="cover_image_upload" name="cover_image_upload" type="file" accept="image/*">
+            <div class="muted" style="margin-top: 0.35rem;">Format: JPG, PNG, GIF, WEBP. Maks 2MB.</div>
         </div>
         <div class="grid cols-2">
             <div>
@@ -72,6 +85,10 @@
         const metaDescriptionInput = document.getElementById('meta_description');
         const metaTitleCount = document.getElementById('meta-title-count');
         const metaDescriptionCount = document.getElementById('meta-description-count');
+        const seoTitle = document.getElementById('seo-preview-title');
+        const seoUrl = document.getElementById('seo-preview-url');
+        const seoDescription = document.getElementById('seo-preview-description');
+        const baseUrl = '{{ url('/') }}';
 
         let slugTouched = false;
 
@@ -90,6 +107,16 @@
             metaDescriptionCount.textContent = metaDescriptionInput.value.length;
         };
 
+        const updateSeoPreview = () => {
+            const titleValue = metaTitleInput.value.trim() || titleInput.value.trim() || 'Judul Artikel';
+            const slugValue = slugInput.value.trim() || 'slug-anda';
+            const descriptionValue = metaDescriptionInput.value.trim() || 'Deskripsi singkat artikel akan tampil di sini.';
+
+            seoTitle.textContent = titleValue;
+            seoUrl.textContent = `${baseUrl}/artikel/${slugValue}`;
+            seoDescription.textContent = descriptionValue;
+        };
+
         slugInput.addEventListener('input', () => {
             slugTouched = slugInput.value.length > 0;
         });
@@ -98,11 +125,17 @@
             if (!slugTouched) {
                 slugInput.value = slugify(titleInput.value);
             }
+            updateSeoPreview();
         });
+
+        slugInput.addEventListener('input', updateSeoPreview);
+        metaTitleInput.addEventListener('input', updateSeoPreview);
+        metaDescriptionInput.addEventListener('input', updateSeoPreview);
 
         metaTitleInput.addEventListener('input', updateMetaCounters);
         metaDescriptionInput.addEventListener('input', updateMetaCounters);
         updateMetaCounters();
+        updateSeoPreview();
 
         tinymce.init({
             selector: '#content',
@@ -111,6 +144,35 @@
             plugins: 'lists link image code',
             toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
             branding: false,
+            images_upload_url: '{{ route('admin.articles.upload-image') }}',
+            images_upload_credentials: true,
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            file_picker_callback: (callback) => {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+
+                input.onchange = () => {
+                    const file = input.files[0];
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('_token', document.querySelector('input[name="_token"]').value);
+
+                    fetch('{{ route('admin.articles.upload-image') }}', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.location) {
+                                callback(data.location, { alt: file.name });
+                            }
+                        });
+                };
+
+                input.click();
+            },
             content_style: 'body { font-family: Source Sans 3, sans-serif; font-size: 16px; }'
         });
     </script>

@@ -29,6 +29,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 	Route::middleware(['auth', 'admin'])->group(function () {
 		Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 		Route::resource('articles', ArticleController::class)->except(['show']);
+		Route::post('articles/upload-image', [ArticleController::class, 'uploadImage'])->name('articles.upload-image');
 		Route::resource('shipping-rates', ShippingRateController::class)->except(['show']);
 	});
 });

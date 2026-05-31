@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -33,6 +34,7 @@ class ArticleController extends Controller
             'excerpt' => ['required', 'string'],
             'content' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'max:255'],
+            'cover_image_upload' => ['nullable', 'image', 'max:2048'],
             'meta_title' => ['nullable', 'string', 'max:60'],
             'meta_description' => ['nullable', 'string', 'max:160'],
             'meta_keywords' => ['nullable', 'string', 'max:255'],
@@ -41,6 +43,11 @@ class ArticleController extends Controller
         ]);
 
         $slug = $this->makeUniqueSlug($validated['slug'] ?? null, $validated['title']);
+        $coverImage = $validated['cover_image'] ?? null;
+
+        if ($request->hasFile('cover_image_upload')) {
+            $coverImage = $this->storeArticleImage($request->file('cover_image_upload'));
+        }
 
         Article::create([
             'title' => $validated['title'],
@@ -48,7 +55,7 @@ class ArticleController extends Controller
             'category' => $validated['category'] ?? null,
             'excerpt' => $validated['excerpt'],
             'content' => $validated['content'] ?? null,
-            'cover_image' => $validated['cover_image'] ?? null,
+            'cover_image' => $coverImage,
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'meta_keywords' => $validated['meta_keywords'] ?? null,
@@ -73,6 +80,7 @@ class ArticleController extends Controller
             'excerpt' => ['required', 'string'],
             'content' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'string', 'max:255'],
+            'cover_image_upload' => ['nullable', 'image', 'max:2048'],
             'meta_title' => ['nullable', 'string', 'max:60'],
             'meta_description' => ['nullable', 'string', 'max:160'],
             'meta_keywords' => ['nullable', 'string', 'max:255'],
@@ -81,6 +89,11 @@ class ArticleController extends Controller
         ]);
 
         $slug = $this->makeUniqueSlug($validated['slug'] ?? null, $validated['title'], $article->id);
+        $coverImage = $validated['cover_image'] ?? $article->cover_image;
+
+        if ($request->hasFile('cover_image_upload')) {
+            $coverImage = $this->storeArticleImage($request->file('cover_image_upload'));
+        }
 
         $article->update([
             'title' => $validated['title'],
@@ -88,7 +101,7 @@ class ArticleController extends Controller
             'category' => $validated['category'] ?? null,
             'excerpt' => $validated['excerpt'],
             'content' => $validated['content'] ?? null,
-            'cover_image' => $validated['cover_image'] ?? null,
+            'cover_image' => $coverImage,
             'meta_title' => $validated['meta_title'] ?? null,
             'meta_description' => $validated['meta_description'] ?? null,
             'meta_keywords' => $validated['meta_keywords'] ?? null,
@@ -120,5 +133,23 @@ class ArticleController extends Controller
         }
 
         return $slug;
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'image', 'max:2048'],
+        ]);
+
+        $url = $this->storeArticleImage($request->file('file'));
+
+        return response()->json(['location' => $url]);
+    }
+
+    private function storeArticleImage($file): string
+    {
+        $path = $file->store('articles', 'public');
+
+        return Storage::disk('public')->url($path);
     }
 }
