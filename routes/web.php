@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ShippingRateController;
 use App\Http\Controllers\HomeCompany\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +20,15 @@ Route::get('/ongkir-6-kota', [HomeController::class, 'ongkir6Kota'])->name('ongk
 Route::get('/artikel', [HomeController::class, 'artikel'])->name('artikel');
 Route::get('/galeri', [HomeController::class, 'galeri'])->name('galeri');
 Route::get('/kontak', [HomeController::class, 'kontak'])->name('kontak');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+	Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+	Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+	Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+	Route::middleware(['auth', 'admin'])->group(function () {
+		Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+		Route::resource('articles', ArticleController::class)->except(['show']);
+		Route::resource('shipping-rates', ShippingRateController::class)->except(['show']);
+	});
+});
