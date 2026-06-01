@@ -14,11 +14,11 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Rute</th>
-                    <th>Layanan</th>
-                    <th>Harga</th>
+                    <th>Region</th>
+                    <th>Tujuan</th>
+                    <th>Harga Dasar</th>
+                    <th>Estimasi</th>
                     <th>Status</th>
-                    <th>Urutan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -26,17 +26,17 @@
                 @forelse ($rates as $rate)
                     <tr>
                         <td>
-                            <strong>{{ $rate->route_label }}</strong>
-                            <div class="muted" style="font-size: 0.85rem;">Min: {{ $rate->min_weight_kg ? $rate->min_weight_kg . ' kg' : '-' }}</div>
+                            <strong>{{ $rate->region?->name ?? '-' }}</strong>
+                            <div class="muted" style="font-size: 0.85rem;">{{ $rate->region?->slug ?? '' }}</div>
                         </td>
-                        <td>{{ $rate->service_type }}</td>
-                        <td>{{ $rate->price_text }}</td>
+                        <td>{{ $rate->destination }}</td>
+                        <td>{{ $rate->base_price !== null ? 'Rp ' . number_format($rate->base_price, 0, ',', '.') : '-' }}</td>
+                        <td>{{ $rate->estimation ?? '-' }}</td>
                         <td>
                             <span class="status {{ $rate->is_active ? 'active' : 'inactive' }}">
                                 {{ $rate->is_active ? 'Aktif' : 'Nonaktif' }}
                             </span>
                         </td>
-                        <td>{{ $rate->sort_order }}</td>
                         <td>
                             <div class="actions">
                                 <a class="btn secondary" href="{{ route('admin.shipping-rates.edit', $rate) }}">Edit</a>

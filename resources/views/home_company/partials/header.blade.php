@@ -1,4 +1,4 @@
-<header id="main-header" class="site-header" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;border-bottom: 2px solid #2596be; 
+<header id="main-header" class="site-header" data-region-api="{{ url('/api/regions') }}" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;border-bottom: 2px solid #2596be; 
     box-shadow: 0 4px 15px rgba(37, 150, 190, 0.5);">
     <!-- Main Navigation -->
     <nav style="background: #ffffff; ...">
@@ -33,7 +33,23 @@
 
                 <a href="{{ route('layanan') }}" class="nav-link {{ request()->routeIs('layanan') ? 'active' : '' }}">Layanan</a>
                 <a href="{{ route('tracking') }}" class="nav-link {{ request()->routeIs('tracking') ? 'active' : '' }}">Tracking</a>
-                <a href="{{ route('cek_ongkir') }}" class="nav-link {{ request()->routeIs('cek_ongkir') ? 'active' : '' }}">Cek Ongkir</a>
+
+                <div class="dropdown dropdown-nested">
+                    <button class="nav-link dropdown-toggle {{ request()->routeIs('cek_ongkir') ? 'active' : '' }}">
+                        Cek Ongkir
+                        <svg style="width: 10px; height: 10px; margin-left: 5px;" fill="none" stroke="currentColor" viewBox="0 0 10 6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                        </svg>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-nested">
+                        <div class="dropdown-item has-submenu">
+                            <a href="{{ route('cek_ongkir') }}">Wilayah Pengiriman</a>
+                            <div class="dropdown-submenu" id="cekongkir-region-desktop">
+                                <span style="display: block; padding: 0.75rem 1.25rem; color: #64748b;">Memuat wilayah...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {{-- <a href="{{ route('ongkir_6_kota') }}" class="nav-link {{ request()->routeIs('ongkir_6_kota') ? 'active' : '' }}">Ongkir 6 Kota</a> --}}
                 <a href="{{ route('artikel') }}" class="nav-link {{ request()->routeIs('artikel') ? 'active' : '' }}">Artikel</a>
                 <a href="{{ route('galeri') }}" class="nav-link {{ request()->routeIs('galeri') ? 'active' : '' }}">Galeri</a>
@@ -107,10 +123,26 @@
                         <i class="fas fa-search-location"></i> Tracking
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('cek_ongkir') }}" class="{{ request()->routeIs('cek_ongkir') ? 'active' : '' }}">
-                        <i class="fas fa-calculator"></i> Cek Ongkir
-                    </a>
+                <li class="has-submenu">
+                    <button id="cekongkir-toggle" class="submenu-toggle {{ request()->routeIs('cek_ongkir') ? 'active' : '' }}">
+                        <span><i class="fas fa-calculator"></i> Cek Ongkir</span>
+                        <svg id="cekongkir-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <ul id="cekongkir-submenu" class="submenu {{ request()->routeIs('cek_ongkir') ? 'show' : '' }}">
+                        <li class="has-submenu">
+                            <button id="region-toggle" class="submenu-toggle submenu-toggle-nested">
+                                <span>Wilayah Pengiriman</span>
+                                <svg id="region-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <ul id="region-submenu" class="submenu submenu-nested">
+                                <li><span style="display: block; padding: 0.75rem 1rem 0.75rem 3.25rem; color: #94a3b8;">Memuat wilayah...</span></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </li>
                 {{-- <li>
                     <a href="{{ route('ongkir_6_kota') }}" class="{{ request()->routeIs('ongkir_6_kota') ? 'active' : '' }}">
@@ -265,6 +297,48 @@
     transition: all 0.2s;
     z-index: 1000;
     margin-top: 0.5rem;
+}
+
+.dropdown-menu-nested {
+    min-width: 260px;
+}
+
+.dropdown-item {
+    position: relative;
+}
+
+.dropdown-item.has-submenu > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.dropdown-item.has-submenu > a::after {
+    content: '>';
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+.dropdown-submenu {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    min-width: 220px;
+    padding: 0.5rem 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(10px);
+    transition: all 0.2s;
+}
+
+.dropdown-item.has-submenu:hover > .dropdown-submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
 }
 
 .dropdown:hover .dropdown-menu {
@@ -458,7 +532,7 @@
 }
 
 .submenu.show {
-    max-height: 200px;
+    max-height: 420px;
 }
 
 .submenu li a {
@@ -480,6 +554,24 @@
     color: #2596be;
     background: #f0f9fc;
     font-weight: 500;
+}
+
+.submenu-toggle-nested {
+    padding-left: 2.75rem;
+    font-size: 0.95rem;
+}
+
+.submenu-nested {
+    max-height: 0;
+}
+
+.submenu-nested.show {
+    max-height: 320px;
+}
+
+.submenu-nested li a {
+    padding-left: 4.25rem;
+    font-size: 0.88rem;
 }
 
 /* Mobile Social Icons */
@@ -565,6 +657,10 @@
         const mobileOverlay = document.getElementById('mobile-overlay');
         const profilToggle = document.getElementById('profil-toggle');
         const profilSubmenu = document.getElementById('profil-submenu');
+        const cekOngkirToggle = document.getElementById('cekongkir-toggle');
+        const cekOngkirSubmenu = document.getElementById('cekongkir-submenu');
+        const regionToggle = document.getElementById('region-toggle');
+        const regionSubmenu = document.getElementById('region-submenu');
         const header = document.getElementById('main-header');
         const heroSection = document.getElementById('hero-section');
 
@@ -615,17 +711,25 @@
         closeDrawerBtn.addEventListener('click', closeDrawer);
         mobileOverlay.addEventListener('click', closeDrawer);
 
-        if (profilToggle && profilSubmenu) {
-            profilToggle.addEventListener('click', function(e) {
+        function bindToggle(toggle, submenu) {
+            if (!toggle || !submenu) {
+                return;
+            }
+
+            toggle.addEventListener('click', function(e) {
                 e.preventDefault();
-                this.classList.toggle('open');
-                profilSubmenu.classList.toggle('show');
+                toggle.classList.toggle('open');
+                submenu.classList.toggle('show');
             });
 
-            if (profilSubmenu.classList.contains('show')) {
-                profilToggle.classList.add('open');
+            if (submenu.classList.contains('show')) {
+                toggle.classList.add('open');
             }
         }
+
+        bindToggle(profilToggle, profilSubmenu);
+        bindToggle(cekOngkirToggle, cekOngkirSubmenu);
+        bindToggle(regionToggle, regionSubmenu);
     }
 
     if (document.readyState === 'loading') {

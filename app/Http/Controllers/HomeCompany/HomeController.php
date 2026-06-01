@@ -4,7 +4,6 @@ namespace App\Http\Controllers\HomeCompany;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\ShippingRate;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -101,23 +100,7 @@ class HomeController extends Controller
      */
     public function cekOngkir()
     {
-        $rates = ShippingRate::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get();
-
-        $rateCards = $rates->map(function (ShippingRate $rate): array {
-            return [
-                'area' => $rate->route_label,
-                'price' => $rate->price_text,
-                'note' => $rate->note,
-            ];
-        })->values();
-
-        $serviceOptions = $rates->pluck('service_type')->filter()->unique()->values();
-
-        return view('home_company.cek_ongkir.index', compact('rateCards', 'serviceOptions'));
+        return view('home_company.cek_ongkir.index');
     }
 
     /**

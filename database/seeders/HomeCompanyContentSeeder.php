@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Article;
+use App\Models\Region;
 use App\Models\ShippingRate;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -53,43 +54,58 @@ class HomeCompanyContentSeeder extends Seeder
             );
         }
 
+        $regions = [
+            ['name' => 'Sumatera', 'slug' => 'sumatera'],
+            ['name' => 'Jawa Barat', 'slug' => 'jawa-barat'],
+            ['name' => 'Jawa Tengah', 'slug' => 'jawa-tengah'],
+        ];
+
+        $regionMap = collect($regions)->mapWithKeys(function ($region) {
+            $model = Region::updateOrCreate(
+                ['slug' => $region['slug']],
+                ['name' => $region['name']]
+            );
+
+            return [$region['slug'] => $model->id];
+        });
+
         $rates = [
             [
-                'route_label' => 'Jakarta - Jawa Barat',
-                'service_type' => 'Cargo Darat',
-                'price_from' => 450000,
-                'price_text' => 'Rp 450.000',
-                'note' => 'Tarif estimasi untuk cargo minimum 10 kg.',
-                'min_weight_kg' => 10,
-                'sort_order' => 1,
+                'region_slug' => 'sumatera',
+                'destination' => 'Jakarta - Medan',
+                'base_price' => 450000,
+                'estimation' => '2-4 hari kerja',
             ],
             [
-                'route_label' => 'Jakarta - Jawa Tengah / Yogyakarta',
-                'service_type' => 'Cargo Darat',
-                'price_from' => 575000,
-                'price_text' => 'Rp 575.000',
-                'note' => 'Cocok untuk pengiriman rutin antar kota besar.',
-                'min_weight_kg' => 10,
-                'sort_order' => 2,
+                'region_slug' => 'jawa-barat',
+                'destination' => 'Jakarta - Bandung',
+                'base_price' => 275000,
+                'estimation' => '1-2 hari kerja',
             ],
             [
-                'route_label' => 'Jakarta - Kalimantan / Sulawesi',
-                'service_type' => 'Cargo Udara',
-                'price_from' => 850000,
-                'price_text' => 'Mulai Rp 850.000',
-                'note' => 'Menyesuaikan kota tujuan, jenis armada, dan volume.',
-                'min_weight_kg' => 10,
-                'sort_order' => 3,
+                'region_slug' => 'jawa-tengah',
+                'destination' => 'Jakarta - Semarang',
+                'base_price' => 325000,
+                'estimation' => '2-3 hari kerja',
             ],
         ];
 
         foreach ($rates as $rate) {
+            $regionId = $regionMap[$rate['region_slug']] ?? null;
+            if (!$regionId) {
+                continue;
+            }
+
             ShippingRate::updateOrCreate(
                 [
-                    'route_label' => $rate['route_label'],
-                    'service_type' => $rate['service_type'],
+                    'region_id' => $regionId,
+                    'destination' => $rate['destination'],
                 ],
-                $rate + ['is_active' => true]
+                [
+                    'base_price' => $rate['base_price'],
+                    'estimation' => $rate['estimation'],
+                    'is_active' => true,
+                ]
             );
         }
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\ShippingRateController;
 use App\Http\Controllers\HomeCompany\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 		Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 		Route::resource('articles', ArticleController::class)->except(['show']);
 		Route::post('articles/upload-image', [ArticleController::class, 'uploadImage'])->name('articles.upload-image');
+		Route::resource('regions', RegionController::class)->except(['show']);
 		Route::resource('shipping-rates', ShippingRateController::class)->except(['show']);
 	});
 });

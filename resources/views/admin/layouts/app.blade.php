@@ -221,6 +221,7 @@
         <nav>
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('admin.articles.index') }}" class="{{ request()->routeIs('admin.articles.*') ? 'active' : '' }}">Artikel</a>
+            <a href="{{ route('admin.regions.index') }}" class="{{ request()->routeIs('admin.regions.*') ? 'active' : '' }}">Region</a>
             <a href="{{ route('admin.shipping-rates.index') }}" class="{{ request()->routeIs('admin.shipping-rates.*') ? 'active' : '' }}">Tarif Ongkir</a>
             <a href="{{ route('home') }}" target="_blank">Lihat Website</a>
         </nav>
