@@ -1,219 +1,283 @@
 import './bootstrap';
 
-function buildRegionLinks(regions) {
-	return regions.map((region) => {
-		const encoded = encodeURIComponent(region.slug);
-		return {
-			label: region.name,
-			href: `/cek-ongkir?region=${encoded}`,
-		};
-	});
+function getHeaderRoutes() {
+    const header = document.getElementById('main-header');
+    return {
+        cekOngkirUrl: header?.dataset?.cekOngkirUrl || '/cek-ongkir',
+        alatBeratUrl: header?.dataset?.alatBeratUrl || '/pengiriman-alat-berat',
+    };
 }
 
-function renderRegionMenu(container, links, isMobile = false) {
-	if (!container) {
-		return;
-	}
-
-	if (!links.length) {
-		container.innerHTML = isMobile
-			? '<li><span style="display:block;padding:0.75rem 1rem 0.75rem 3.25rem;color:#94a3b8;">Belum ada wilayah.</span></li>'
-			: '<span style="display:block;padding:0.75rem 1.25rem;color:#94a3b8;">Belum ada wilayah.</span>';
-		return;
-	}
-
-	if (isMobile) {
-		container.innerHTML = links
-			.map((link) => `<li><a href="${link.href}">${link.label}</a></li>`)
-			.join('');
-	} else {
-		container.innerHTML = links
-			.map((link) => `<a href="${link.href}">${link.label}</a>`)
-			.join('');
-	}
+// 1. Tambahkan parameter ke-3: serviceType
+function buildRegionLinks(regions, baseUrl, serviceType = null) {
+    const resolvedBaseUrl = baseUrl || '/cek-ongkir';
+    if (!regions.length) {
+        return '<div class="px-4 py-3 text-sm text-slate-500">Belum ada wilayah.</div>';
+    }
+    return regions.map((region) => {
+        const encoded = encodeURIComponent(region.slug);
+        
+        // 2. Sisipkan parameter &service= jika serviceType diisi (contoh: untuk charter)
+        const url = serviceType 
+            ? `${resolvedBaseUrl}?region=${encoded}&service=${serviceType}` 
+            : `${resolvedBaseUrl}?region=${encoded}`;
+            
+        return `<a href="${url}" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">${region.name}</a>`;
+    }).join('');
 }
 
+function buildDesktopCekOngkirMenu(regions, routes) {
+    const regionLinks = buildRegionLinks(regions, routes.cekOngkirUrl);
+    
+    // 3. Panggil fungsi dengan tambahan parameter 'charter'
+    const charterLinks = buildRegionLinks(regions, routes.cekOngkirUrl, 'charter'); 
+    
+    const kendaraanLinks = `
+        <a href="${routes.cekOngkirUrl}?kategori=motor" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Cek Ongkir Pengiriman Motor</a>
+        <a href="${routes.cekOngkirUrl}?kategori=mobil" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Cek Ongkir Pengiriman Mobil</a>
+    `;
+
+    return `
+        <div class="space-y-1">
+            <div class="dropdown-item has-submenu">
+                <a href="#" class="block flex items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">
+                    Pengiriman Jalur Darat dan Laut
+                </a>
+                <div class="dropdown-submenu">${regionLinks}</div>
+            </div>
+            <a href="${routes.cekOngkirUrl}?jalur=udara" class="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Pengiriman Jalur Udara</a>
+            <div class="dropdown-item has-submenu">
+                <a href="#" class="block flex items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">
+                    Pengiriman Kendaraan
+                </a>
+                <div class="dropdown-submenu">${kendaraanLinks}</div>
+            </div>
+            <a href="${routes.alatBeratUrl}" class="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Pengiriman Alat Berat</a>
+            <div class="dropdown-item has-submenu">
+                <a href="#" class="block flex items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">
+                    Charter Armada
+                </a>
+                <div class="dropdown-submenu">${charterLinks}</div>
+            </div>
+        </div>
+    `;
+}
+
+function bindSubmenuToggles(scope = document) {
+    scope.querySelectorAll('[data-submenu-target]').forEach((button) => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = button.getAttribute('data-submenu-target');
+            const target = targetId ? document.getElementById(targetId) : null;
+            if (!target) return;
+            
+            button.classList.toggle('open');
+            target.classList.toggle('show');
+        });
+    });
+}
+
+function renderCekOngkirMenus(regions) {
+    const headerRoutes = getHeaderRoutes();
+    const desktopContainer = document.getElementById('cekongkir-menu-desktop');
+    const mobileContainer = document.getElementById('cekongkir-submenu');
+    
+    if (desktopContainer) {
+        desktopContainer.innerHTML = buildDesktopCekOngkirMenu(regions, headerRoutes);
+    }
+    
+    if (mobileContainer) {
+        const kendaraanLinks = `
+            <li><a href="${headerRoutes.cekOngkirUrl}?kategori=motor" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Pengiriman Motor</a></li>
+            <li><a href="${headerRoutes.cekOngkirUrl}?kategori=mobil" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Pengiriman Mobil</a></li>
+        `;
+        
+        // 4. Pisahkan URL untuk Darat dan URL untuk Charter pada menu Mobile
+        const regionListHTML = regions.length 
+            ? regions.map((region) => `<li><a href="${headerRoutes.cekOngkirUrl}?region=${encodeURIComponent(region.slug)}" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">${region.name}</a></li>`).join('') 
+            : '<li><span style="display:block;padding:0.75rem 1rem 0.75rem 3.25rem;color:#94a3b8;">Belum ada wilayah.</span></li>';
+
+        const charterListHTML = regions.length 
+            ? regions.map((region) => `<li><a href="${headerRoutes.cekOngkirUrl}?region=${encodeURIComponent(region.slug)}&service=charter" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">${region.name}</a></li>`).join('') 
+            : '<li><span style="display:block;padding:0.75rem 1rem 0.75rem 3.25rem;color:#94a3b8;">Belum ada wilayah.</span></li>';
+
+        mobileContainer.innerHTML = `
+            <li class="has-submenu">
+                <button type="button" class="submenu-toggle submenu-toggle-nested" data-submenu-target="mobile-darat-laut">
+                    <span>Jalur Darat dan Laut</span>
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <ul id="mobile-darat-laut" class="submenu submenu-nested">
+                    ${regionListHTML}
+                </ul>
+            </li>
+            <li><a href="${headerRoutes.cekOngkirUrl}?jalur=udara" class="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Jalur Udara</a></li>
+            <li class="has-submenu">
+                <button type="button" class="submenu-toggle submenu-toggle-nested" data-submenu-target="mobile-kendaraan">
+                    <span>Pengiriman Kendaraan</span>
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <ul id="mobile-kendaraan" class="submenu submenu-nested">
+                    ${kendaraanLinks}
+                </ul>
+            </li>
+            <li><a href="${headerRoutes.alatBeratUrl}" class="block rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Alat Berat</a></li>
+            <li class="has-submenu">
+                <button type="button" class="submenu-toggle submenu-toggle-nested" data-submenu-target="mobile-charter">
+                    <span>Charter Armada</span>
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <ul id="mobile-charter" class="submenu submenu-nested">
+                    ${charterListHTML}
+                </ul>
+            </li>
+        `;
+        bindSubmenuToggles(mobileContainer);
+    }
+}
 function initRegionMenus() {
-	const header = document.getElementById('main-header');
-	const apiUrl = header?.dataset?.regionApi;
-	if (!apiUrl) {
-		return;
-	}
-
-	const desktopContainer = document.getElementById('cekongkir-region-desktop');
-	const mobileContainer = document.getElementById('region-submenu');
-
-	fetch(apiUrl)
-		.then((response) => response.json())
-		.then((payload) => {
-			const links = buildRegionLinks(payload.data || []);
-			renderRegionMenu(desktopContainer, links, false);
-			renderRegionMenu(mobileContainer, links, true);
-		})
-		.catch(() => {
-			renderRegionMenu(desktopContainer, [], false);
-			renderRegionMenu(mobileContainer, [], true);
-		});
+    const header = document.getElementById('main-header');
+    const apiUrl = header?.dataset?.regionApi;
+    if (!apiUrl) return;
+    
+    fetch(apiUrl)
+        .then((response) => response.json())
+        .then((payload) => {
+            renderCekOngkirMenus(payload.data || []);
+        })
+        .catch(() => {
+            renderCekOngkirMenus([]);
+        });
 }
 
 function initCekOngkirTable() {
-	const container = document.querySelector('[data-cekongkir]');
-	if (!container) {
-		return;
-	}
+    const container = document.querySelector('[data-cekongkir]');
+    if (!container) return;
+    
+    const apiUrl = container.dataset.api;
+    const presetRegion = container.dataset.region;
+    const searchParams = new URLSearchParams(window.location.search);
+    const regionSlug = presetRegion || searchParams.get('region');
+    
+    // Ambil jenis layanan dari URL (darat, udara, motor, mobil, charter)
+    const serviceType = searchParams.get('kategori') || searchParams.get('jalur') || searchParams.get('service') || 'darat_laut';
+    
+    const tableBody = document.getElementById('rate-table-body');
+    const theadTr = container.querySelector('thead tr');
+    const pagination = document.getElementById('rate-pagination');
+    const form = document.getElementById('rate-filter');
+    const searchInput = document.getElementById('search');
+    const perPageSelect = document.getElementById('per_page');
+    
+    // Render Header Dinamis sesuai Jenis Layanan
+    if (serviceType === 'motor' || serviceType === 'mobil') {
+        theadTr.innerHTML = `
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Tujuan</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Jenis Kendaraan</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Harga</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Estimasi</th>`;
+    } else if (serviceType === 'charter') {
+        theadTr.innerHTML = `
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Tujuan</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Jenis Armada</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Harga Sewa</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Estimasi</th>`;
+    } else {
+        theadTr.innerHTML = `
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Tujuan</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Ongkir Per Kg</th>
+            <th class="px-5 py-4 text-sm tracking-wide whitespace-nowrap">Estimasi</th>`;
+    }
 
-	const apiUrl = container.dataset.api;
-	const presetRegion = container.dataset.region;
-	const searchParams = new URLSearchParams(window.location.search);
-	const regionSlug = presetRegion || searchParams.get('region');
+    const state = { rates: [], filtered: [], page: 1, perPage: parseInt(perPageSelect?.value || '10', 10), search: '' };
 
-	const tableBody = document.getElementById('rate-table-body');
-	const pagination = document.getElementById('rate-pagination');
-	const form = document.getElementById('rate-filter');
-	const searchInput = document.getElementById('search');
-	const perPageSelect = document.getElementById('per_page');
+    function setLoading(message) {
+        if (tableBody) tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-6 text-center text-slate-500">${message}</td></tr>`;
+    }
 
-	const state = {
-		rates: [],
-		filtered: [],
-		page: 1,
-		perPage: parseInt(perPageSelect?.value || '10', 10),
-		search: '',
-	};
+    function applyFilters() {
+        const keyword = state.search.trim().toLowerCase();
+        state.filtered = state.rates.filter((rate) => {
+            if (!keyword) return true;
+            return (rate.destination || '').toLowerCase().includes(keyword) || (rate.estimation || '').toLowerCase().includes(keyword);
+        });
+    }
 
-	function setLoading(message) {
-		if (tableBody) {
-			tableBody.innerHTML = `<tr><td colspan="3" style="padding:1.5rem;text-align:center;color:#64748b;">${message}</td></tr>`;
-		}
-	}
+    function renderRows() {
+        if (!tableBody) return;
+        if (!state.filtered.length) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-6 text-center text-slate-500">Tarif belum tersedia untuk rute/layanan ini.</td></tr>';
+            return;
+        }
+        
+        const start = (state.page - 1) * state.perPage;
+        const slice = state.filtered.slice(start, start + state.perPage);
+        
+        tableBody.innerHTML = slice.map((rate) => {
+            const priceCell = rate.price ? rate.price : '<a href="https://wa.me/6281180892925" target="_blank" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white no-underline">Hubungi Kami</a>';
+            
+            // Kolom Tambahan Dinamis
+            let extraCol = '';
+            if (serviceType === 'motor' || serviceType === 'mobil') {
+                extraCol = `<td class="px-5 py-4 text-slate-900 whitespace-nowrap">${rate.specific_details?.vehicle_type || '-'}</td>`;
+            } else if (serviceType === 'charter') {
+                extraCol = `<td class="px-5 py-4 text-slate-900 whitespace-nowrap">${rate.specific_details?.fleet_type || '-'}</td>`;
+            }
 
-	function applyFilters() {
-		const keyword = state.search.trim().toLowerCase();
-		state.filtered = state.rates.filter((rate) => {
-			if (!keyword) {
-				return true;
-			}
-			const destination = (rate.destination || '').toLowerCase();
-			const estimation = (rate.estimation || '').toLowerCase();
-			return destination.includes(keyword) || estimation.includes(keyword);
-		});
-	}
+            return `
+                <tr class="border-b border-slate-200 hover:bg-slate-50">
+                    <td class="px-5 py-4 font-semibold text-slate-900 whitespace-nowrap">${rate.destination || '-'}</td>
+                    ${extraCol}
+                    <td class="px-5 py-4 text-slate-900 whitespace-nowrap">${priceCell}</td>
+                    <td class="px-5 py-4 text-slate-600 whitespace-nowrap">${rate.estimation || '-'}</td>
+                </tr>
+            `;
+        }).join('');
+    }
 
-	function renderRows() {
-		if (!tableBody) {
-			return;
-		}
+    function renderPagination() { /* ... (Gunakan kode renderPagination yang lama, tidak perlu diubah) ... */
+        if (!pagination) return;
+        const totalPages = Math.ceil(state.filtered.length / state.perPage);
+        if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+        const buttons = [];
+        const startPage = Math.max(1, state.page - 2);
+        const endPage = Math.min(totalPages, state.page + 2);
+        const prevDisabled = state.page === 1;
+        buttons.push(`<button type="button" data-page="${state.page - 1}" ${prevDisabled ? 'disabled' : ''} class="rounded-lg border border-slate-300 px-3 py-2 text-sm ${prevDisabled ? 'cursor-not-allowed text-slate-400' : 'text-slate-700 hover:bg-slate-50'}">Prev</button>`);
+        for (let page = startPage; page <= endPage; page += 1) {
+            if (page === state.page) buttons.push(`<span class="rounded-lg bg-[#001f5c] px-3 py-2 text-sm text-white">${page}</span>`);
+            else buttons.push(`<button type="button" data-page="${page}" class="rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">${page}</button>`);
+        }
+        const nextDisabled = state.page === totalPages;
+        buttons.push(`<button type="button" data-page="${state.page + 1}" ${nextDisabled ? 'disabled' : ''} class="rounded-lg border border-slate-300 px-3 py-2 text-sm ${nextDisabled ? 'cursor-not-allowed text-slate-400' : 'text-slate-700 hover:bg-slate-50'}">Next</button>`);
+        pagination.innerHTML = buttons.join('');
+        pagination.querySelectorAll('button[data-page]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const page = parseInt(button.getAttribute('data-page') || '1', 10);
+                if (!Number.isNaN(page)) { state.page = Math.max(1, page); renderRows(); renderPagination(); }
+            });
+        });
+    }
 
-		if (!state.filtered.length) {
-			tableBody.innerHTML = '<tr><td colspan="3" style="padding:1.5rem;text-align:center;color:#64748b;">Tarif belum tersedia untuk wilayah ini.</td></tr>';
-			return;
-		}
+    function refresh() { applyFilters(); const totalPages = Math.max(1, Math.ceil(state.filtered.length / state.perPage)); if (state.page > totalPages) { state.page = totalPages; } renderRows(); renderPagination(); }
 
-		const start = (state.page - 1) * state.perPage;
-		const slice = state.filtered.slice(start, start + state.perPage);
+    if (form) { form.addEventListener('submit', (e) => { e.preventDefault(); state.search = searchInput?.value || ''; state.page = 1; refresh(); }); }
+    if (perPageSelect) { perPageSelect.addEventListener('change', () => { state.perPage = parseInt(perPageSelect.value || '10', 10); state.page = 1; refresh(); }); }
 
-		tableBody.innerHTML = slice
-			.map((rate) => {
-				const priceCell = rate.price
-					? rate.price
-					: '<a href="https://wa.me/6281180892925?text=Halo!%20Saya%20ingin%20tanya%20tarif%20pengiriman." target="_blank" style="display:inline-flex;align-items:center;justify-content:center;background:#1d4ed8;color:white;padding:0.5rem 1rem;border-radius:9999px;text-decoration:none;font-weight:600;font-size:0.9rem;">Hubungi Kami</a>';
-
-				return `
-					<tr style="border-bottom:1px solid #e2e8f0;">
-						<td style="padding:1rem 1.25rem;font-weight:600;color:#0f172a;">${rate.destination || '-'}</td>
-						<td style="padding:1rem 1.25rem;color:#0f172a;">${priceCell}</td>
-						<td style="padding:1rem 1.25rem;color:#475569;">${rate.estimation || '-'}</td>
-					</tr>
-				`;
-			})
-			.join('');
-	}
-
-	function renderPagination() {
-		if (!pagination) {
-			return;
-		}
-
-		const totalPages = Math.ceil(state.filtered.length / state.perPage);
-		if (totalPages <= 1) {
-			pagination.innerHTML = '';
-			return;
-		}
-
-		const buttons = [];
-		const startPage = Math.max(1, state.page - 2);
-		const endPage = Math.min(totalPages, state.page + 2);
-
-		const prevDisabled = state.page === 1;
-		buttons.push(`<button type="button" data-page="${state.page - 1}" ${prevDisabled ? 'disabled' : ''} style="padding:0.5rem 0.85rem;border:1px solid #cbd5e1;border-radius:10px;${prevDisabled ? 'color:#94a3b8;cursor:not-allowed;' : 'color:#0f172a;'}">Prev</button>`);
-
-		for (let page = startPage; page <= endPage; page += 1) {
-			if (page === state.page) {
-				buttons.push(`<span style="padding:0.5rem 0.85rem;border-radius:10px;background:#001f5c;color:white;">${page}</span>`);
-			} else {
-				buttons.push(`<button type="button" data-page="${page}" style="padding:0.5rem 0.85rem;border:1px solid #cbd5e1;border-radius:10px;color:#0f172a;">${page}</button>`);
-			}
-		}
-
-		const nextDisabled = state.page === totalPages;
-		buttons.push(`<button type="button" data-page="${state.page + 1}" ${nextDisabled ? 'disabled' : ''} style="padding:0.5rem 0.85rem;border:1px solid #cbd5e1;border-radius:10px;${nextDisabled ? 'color:#94a3b8;cursor:not-allowed;' : 'color:#0f172a;'}">Next</button>`);
-
-		pagination.innerHTML = buttons.join('');
-
-		pagination.querySelectorAll('button[data-page]').forEach((button) => {
-			button.addEventListener('click', () => {
-				const page = parseInt(button.getAttribute('data-page') || '1', 10);
-				if (!Number.isNaN(page)) {
-					state.page = Math.max(1, page);
-					renderRows();
-					renderPagination();
-				}
-			});
-		});
-	}
-
-	function refresh() {
-		applyFilters();
-		const totalPages = Math.max(1, Math.ceil(state.filtered.length / state.perPage));
-		if (state.page > totalPages) {
-			state.page = totalPages;
-		}
-		renderRows();
-		renderPagination();
-	}
-
-	if (form) {
-		form.addEventListener('submit', (event) => {
-			event.preventDefault();
-			state.search = searchInput?.value || '';
-			state.page = 1;
-			refresh();
-		});
-	}
-
-	if (perPageSelect) {
-		perPageSelect.addEventListener('change', () => {
-			state.perPage = parseInt(perPageSelect.value || '10', 10);
-			state.page = 1;
-			refresh();
-		});
-	}
-
-	setLoading('Memuat data tarif...');
-
-	const url = regionSlug ? `${apiUrl}?region_slug=${encodeURIComponent(regionSlug)}` : apiUrl;
-	fetch(url)
-		.then((response) => response.json())
-		.then((payload) => {
-			state.rates = payload.data || [];
-			refresh();
-		})
-		.catch(() => {
-			setLoading('Gagal memuat data tarif.');
-		});
+    setLoading('Memuat data tarif...');
+    
+    // Gabungkan Parameter ke URL API
+    const fetchUrl = new URL(apiUrl, window.location.origin);
+    if (regionSlug) fetchUrl.searchParams.append('region_slug', regionSlug);
+    fetchUrl.searchParams.append('service_type', serviceType);
+    
+    fetch(fetchUrl.toString())
+        .then((res) => res.json())
+        .then((payload) => { state.rates = payload.data || []; refresh(); })
+        .catch(() => { setLoading('Gagal memuat data tarif.'); });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	initRegionMenus();
-	initCekOngkirTable();
+    initRegionMenus();
+    initCekOngkirTable();
 });

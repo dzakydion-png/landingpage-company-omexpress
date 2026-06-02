@@ -1,45 +1,91 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Tarif Ongkir')
-
 @section('content')
-    <div class="page-header">
-        <h2 class="page-title">Edit Tarif Ongkir</h2>
-        <a class="btn ghost" href="{{ route('admin.shipping-rates.index') }}">Kembali</a>
-    </div>
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-xl font-bold text-slate-800 mb-6">Edit Tarif Ongkir</h2>
 
-    <form class="card form-grid" method="post" action="{{ route('admin.shipping-rates.update', $shippingRate) }}">
-        @csrf
-        @method('PUT')
-        <div>
-            <label for="region_id">Region</label>
-            <select id="region_id" name="region_id" required>
-                <option value="">Pilih region</option>
-                @foreach ($regions as $region)
-                    <option value="{{ $region->id }}" {{ (string) old('region_id', $shippingRate->region_id) === (string) $region->id ? 'selected' : '' }}>
-                        {{ $region->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="destination">Tujuan</label>
-            <input id="destination" name="destination" type="text" value="{{ old('destination', $shippingRate->destination) }}" required>
-        </div>
-        <div class="grid cols-2">
-            <div>
-                <label for="base_price">Harga Dasar</label>
-                <input id="base_price" name="base_price" type="number" min="0" value="{{ old('base_price', $shippingRate->base_price) }}" required>
+        <form action="{{ route('admin.shipping-rates.update', $shippingRate->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Wilayah Tujuan</label>
+                    <select name="region_id" class="w-full rounded-lg border-slate-300" required>
+                        @foreach($regions as $region)
+                            <option value="{{ $region->id }}" {{ $shippingRate->region_id == $region->id ? 'selected' : '' }}>
+                                {{ $region->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Layanan</label>
+                    <select name="service_type" id="service_type" class="w-full rounded-lg border-slate-300" onchange="toggleFields()" required>
+                        <option value="darat_laut" {{ $shippingRate->service_type == 'darat_laut' ? 'selected' : '' }}>Darat & Laut</option>
+                        <option value="udara" {{ $shippingRate->service_type == 'udara' ? 'selected' : '' }}>Udara</option>
+                        <option value="motor" {{ $shippingRate->service_type == 'motor' ? 'selected' : '' }}>Pengiriman Motor</option>
+                        <option value="mobil" {{ $shippingRate->service_type == 'mobil' ? 'selected' : '' }}>Pengiriman Mobil</option>
+                        <option value="alat_berat" {{ $shippingRate->service_type == 'alat_berat' ? 'selected' : '' }}>Alat Berat</option>
+                        <option value="charter" {{ $shippingRate->service_type == 'charter' ? 'selected' : '' }}>Charter Armada</option>
+                    </select>
+                </div>
+
+                <div id="vehicle_field" style="display:none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Kendaraan / CC</label>
+                    <input type="text" name="vehicle_type" class="w-full rounded-lg border-slate-300" 
+                        value="{{ $shippingRate->specific_details['vehicle_type'] ?? '' }}">
+                </div>
+
+                <div id="fleet_field" style="display:none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Armada</label>
+                    <input type="text" name="fleet_type" class="w-full rounded-lg border-slate-300" 
+                        value="{{ $shippingRate->specific_details['fleet_type'] ?? '' }}">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tujuan Detail (Kota/Kab)</label>
+                    <input type="text" name="destination" class="w-full rounded-lg border-slate-300" value="{{ $shippingRate->destination }}" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Harga (Rp)</label>
+                    <input type="number" name="base_price" class="w-full rounded-lg border-slate-300" value="{{ $shippingRate->base_price }}" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Estimasi Waktu</label>
+                    <input type="text" name="estimation" class="w-full rounded-lg border-slate-300" value="{{ $shippingRate->estimation }}" required>
+                </div>
             </div>
-            <div>
-                <label for="estimation">Estimasi</label>
-                <input id="estimation" name="estimation" type="text" value="{{ old('estimation', $shippingRate->estimation) }}" required>
+
+            <div class="flex justify-end gap-3 mt-4">
+                <a href="{{ route('admin.shipping-rates.index') }}" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg">Batal</a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Update Tarif</button>
             </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <input id="is_active" name="is_active" type="checkbox" value="1" {{ old('is_active', $shippingRate->is_active) ? 'checked' : '' }} style="width: auto;">
-            <label for="is_active" class="muted">Aktif</label>
-        </div>
-        <button class="btn" type="submit">Perbarui Tarif</button>
-    </form>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleFields() {
+    const type = document.getElementById('service_type').value;
+    const vehicleField = document.getElementById('vehicle_field');
+    const fleetField = document.getElementById('fleet_field');
+    
+    if(type === 'motor' || type === 'mobil') {
+        vehicleField.style.display = 'block';
+        fleetField.style.display = 'none';
+    } else if(type === 'charter') {
+        vehicleField.style.display = 'none';
+        fleetField.style.display = 'block';
+    } else {
+        vehicleField.style.display = 'none';
+        fleetField.style.display = 'none';
+    }
+}
+// Set status dropdown saat halaman edit dibuka
+document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
 @endsection

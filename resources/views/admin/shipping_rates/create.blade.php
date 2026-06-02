@@ -1,44 +1,87 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah Tarif Ongkir')
-
 @section('content')
-    <div class="page-header">
-        <h2 class="page-title">Tambah Tarif Ongkir</h2>
-        <a class="btn ghost" href="{{ route('admin.shipping-rates.index') }}">Kembali</a>
-    </div>
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-xl font-bold text-slate-800 mb-6">Tambah Tarif Ongkir Baru</h2>
 
-    <form class="card form-grid" method="post" action="{{ route('admin.shipping-rates.store') }}">
-        @csrf
-        <div>
-            <label for="region_id">Region</label>
-            <select id="region_id" name="region_id" required>
-                <option value="">Pilih region</option>
-                @foreach ($regions as $region)
-                    <option value="{{ $region->id }}" {{ (string) old('region_id') === (string) $region->id ? 'selected' : '' }}>
-                        {{ $region->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="destination">Tujuan</label>
-            <input id="destination" name="destination" type="text" value="{{ old('destination') }}" required>
-        </div>
-        <div class="grid cols-2">
-            <div>
-                <label for="base_price">Harga Dasar</label>
-                <input id="base_price" name="base_price" type="number" min="0" value="{{ old('base_price') }}" required>
+        <form action="{{ route('admin.shipping-rates.store') }}" method="POST">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Wilayah Tujuan</label>
+                    <select name="region_id" class="w-full rounded-lg border-slate-300" required>
+                        <option value="">-- Pilih Wilayah --</option>
+                        @foreach($regions as $region)
+                            <option value="{{ $region->id }}">{{ $region->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Layanan</label>
+                    <select name="service_type" id="service_type" class="w-full rounded-lg border-slate-300" onchange="toggleFields()" required>
+                        <option value="darat_laut">Darat & Laut</option>
+                        <option value="udara">Udara</option>
+                        <option value="motor">Pengiriman Motor</option>
+                        <option value="mobil">Pengiriman Mobil</option>
+                        <option value="alat_berat">Alat Berat</option>
+                        <option value="charter">Charter Armada</option>
+                    </select>
+                </div>
+
+                <div id="vehicle_field" style="display:none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Kendaraan / CC</label>
+                    <input type="text" name="vehicle_type" class="w-full rounded-lg border-slate-300" placeholder="Contoh: Vario 150cc">
+                </div>
+
+                <div id="fleet_field" style="display:none;">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Jenis Armada</label>
+                    <input type="text" name="fleet_type" class="w-full rounded-lg border-slate-300" placeholder="Contoh: Truk Fuso">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Tujuan Detail (Kota/Kab)</label>
+                    <input type="text" name="destination" class="w-full rounded-lg border-slate-300" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Harga (Rp)</label>
+                    <input type="number" name="base_price" class="w-full rounded-lg border-slate-300" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Estimasi Waktu</label>
+                    <input type="text" name="estimation" class="w-full rounded-lg border-slate-300" placeholder="Contoh: 3 - 5 Hari" required>
+                </div>
             </div>
-            <div>
-                <label for="estimation">Estimasi</label>
-                <input id="estimation" name="estimation" type="text" value="{{ old('estimation') }}" required>
+
+            <div class="flex justify-end gap-3 mt-4">
+                <a href="{{ route('admin.shipping-rates.index') }}" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg">Batal</a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Simpan Tarif</button>
             </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <input id="is_active" name="is_active" type="checkbox" value="1" {{ old('is_active', true) ? 'checked' : '' }} style="width: auto;">
-            <label for="is_active" class="muted">Aktif</label>
-        </div>
-        <button class="btn" type="submit">Simpan Tarif</button>
-    </form>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleFields() {
+    const type = document.getElementById('service_type').value;
+    const vehicleField = document.getElementById('vehicle_field');
+    const fleetField = document.getElementById('fleet_field');
+    
+    if(type === 'motor' || type === 'mobil') {
+        vehicleField.style.display = 'block';
+        fleetField.style.display = 'none';
+    } else if(type === 'charter') {
+        vehicleField.style.display = 'none';
+        fleetField.style.display = 'block';
+    } else {
+        vehicleField.style.display = 'none';
+        fleetField.style.display = 'none';
+    }
+}
+// Jalankan saat halaman dimuat
+document.addEventListener('DOMContentLoaded', toggleFields);
+</script>
 @endsection

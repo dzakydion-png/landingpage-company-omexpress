@@ -1,4 +1,4 @@
-<header id="main-header" class="site-header" data-region-api="{{ url('/api/regions') }}" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;border-bottom: 2px solid #2596be; 
+<header id="main-header" class="site-header" data-region-api="{{ url('/api/regions') }}" data-cek-ongkir-url="{{ route('cek_ongkir') }}" data-alat-berat-url="{{ route('pengiriman.alat_berat') }}" style="background: #001f5c; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; transform: translateY(-100%); transition: transform 0.3s ease;border-bottom: 2px solid #2596be; 
     box-shadow: 0 4px 15px rgba(37, 150, 190, 0.5);">
     <!-- Main Navigation -->
     <nav style="background: #ffffff; ...">
@@ -41,13 +41,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                         </svg>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-nested">
-                        <div class="dropdown-item has-submenu">
-                            <a href="{{ route('cek_ongkir') }}">Wilayah Pengiriman</a>
-                            <div class="dropdown-submenu" id="cekongkir-region-desktop">
-                                <span style="display: block; padding: 0.75rem 1.25rem; color: #64748b;">Memuat wilayah...</span>
-                            </div>
-                        </div>
+                    <div class="dropdown-menu dropdown-menu-nested" style="min-width: 320px; padding: 0.75rem;" id="cekongkir-menu-desktop">
+                        <div style="padding: 0.75rem 1rem; color: #64748b;">Memuat menu...</div>
                     </div>
                 </div>
                 {{-- <a href="{{ route('ongkir_6_kota') }}" class="nav-link {{ request()->routeIs('ongkir_6_kota') ? 'active' : '' }}">Ongkir 6 Kota</a> --}}
@@ -130,18 +125,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <ul id="cekongkir-submenu" class="submenu {{ request()->routeIs('cek_ongkir') ? 'show' : '' }}">
-                        <li class="has-submenu">
-                            <button id="region-toggle" class="submenu-toggle submenu-toggle-nested">
-                                <span>Wilayah Pengiriman</span>
-                                <svg id="region-arrow" width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-                            <ul id="region-submenu" class="submenu submenu-nested">
-                                <li><span style="display: block; padding: 0.75rem 1rem 0.75rem 3.25rem; color: #94a3b8;">Memuat wilayah...</span></li>
-                            </ul>
-                        </li>
+                    <ul id="cekongkir-submenu" class="submenu {{ request()->routeIs('cek_ongkir') ? 'show' : '' }}" style="max-height: none;">
+                        <li><span style="display: block; padding: 0.75rem 1rem 0.75rem 3.25rem; color: #94a3b8;">Memuat menu...</span></li>
                     </ul>
                 </li>
                 {{-- <li>
@@ -532,7 +517,7 @@
 }
 
 .submenu.show {
-    max-height: 420px;
+    max-height: 900px;
 }
 
 .submenu li a {
@@ -566,7 +551,7 @@
 }
 
 .submenu-nested.show {
-    max-height: 320px;
+    max-height: 900px;
 }
 
 .submenu-nested li a {

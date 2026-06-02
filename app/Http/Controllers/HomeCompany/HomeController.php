@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HomeCompany;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Models\Region;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -100,8 +101,27 @@ class HomeController extends Controller
      */
     public function cekOngkir()
     {
-        return view('home_company.cek_ongkir.index');
+        $regionSlug = request('region');
+        $regionName = null;
+
+        if (filled($regionSlug)) {
+            $regionName = Region::query()
+                ->where('slug', $regionSlug)
+                ->value('name');
+        }
+
+        return view('home_company.cek_ongkir.index', [
+            'regionName' => $regionName,
+            'regionSlug' => $regionSlug,
+        ]);
     }
+
+    /**
+     * Halaman Pengiriman Alat Berat
+     */
+    public function pengirimanAlatBerat() {
+    return view('home_company.layanan.alat_berat'); // Pastikan file ini ada
+}
 
     /**
      * Halaman Cek Resi

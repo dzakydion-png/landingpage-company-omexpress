@@ -16,6 +16,8 @@ class ShippingRate extends Model
         'base_price',
         'estimation',
         'is_active',
+        'service_type', 
+        'specific_details', 
     ];
 
     protected function casts(): array
@@ -23,6 +25,7 @@ class ShippingRate extends Model
         return [
             'is_active' => 'boolean',
             'base_price' => 'integer',
+            'specific_details' => 'array',
         ];
     }
 
