@@ -325,7 +325,6 @@
 
 @push('scripts')
 <script>
-    // Image data for lightbox
     const images = @json($images);
     let currentIndex = 0;
     let filteredImages = [...images];

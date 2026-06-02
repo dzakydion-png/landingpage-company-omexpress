@@ -986,7 +986,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Auto slide for awards
     setInterval(function() {
         awardIndex = awardIndex < maxAwardIndex ? awardIndex + 1 : 0;
         updateAwardSlider();

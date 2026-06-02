@@ -11,7 +11,6 @@ class ShippingRateController extends Controller
 {
 public function index(Request $request)
 {
-    // Gunakan query builder agar fleksibel
     $query = ShippingRate::with('region')->orderByDesc('id');
 
     if ($request->filled('service_type')) {
@@ -28,7 +27,7 @@ public function index(Request $request)
         });
     }
 
-    // Pastikan ini menggunakan paginate() agar method links() atau hasPages() tersedia
+    // menggunakan paginate()
     $rates = $query->paginate(12)->withQueryString(); 
 
     return view('admin.shipping_rates.index', compact('rates'));
@@ -41,9 +40,7 @@ public function index(Request $request)
         return view('admin.shipping_rates.create', compact('regions'));
     }
 
-   // Pastikan di dalam ShippingRateController.php
 public function store(Request $request) {
-    // Tambahkan 'nullable' agar tidak error saat input kosong
     $validated = $request->validate([
         'region_id' => 'required',
         'service_type' => 'required',
@@ -85,8 +82,8 @@ public function store(Request $request) {
             'destination' => ['required', 'string', 'max:255'],
             'base_price' => ['nullable', 'integer', 'min:0'],
             'estimation' => ['required', 'string', 'max:120'],
-            'vehicle_type' => ['nullable', 'string'], // Tambahkan
-            'fleet_type' => ['nullable', 'string'],   // Tambahkan
+            'vehicle_type' => ['nullable', 'string'], 
+            'fleet_type' => ['nullable', 'string'],  
             'is_active' => ['nullable'],
         ]);
 
@@ -98,7 +95,6 @@ public function store(Request $request) {
         } elseif ($request->service_type == 'charter') {
             $specificDetails = ['fleet_type' => $request->fleet_type];
         } else {
-            // Jika pindah ke layanan darat/udara, kosongkan detail spesifik
             $specificDetails = null; 
         }
 

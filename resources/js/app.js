@@ -8,7 +8,6 @@ function getHeaderRoutes() {
     };
 }
 
-// 1. Tambahkan parameter ke-3: serviceType
 function buildRegionLinks(regions, baseUrl, serviceType = null) {
     const resolvedBaseUrl = baseUrl || '/cek-ongkir';
     if (!regions.length) {
@@ -17,7 +16,6 @@ function buildRegionLinks(regions, baseUrl, serviceType = null) {
     return regions.map((region) => {
         const encoded = encodeURIComponent(region.slug);
         
-        // 2. Sisipkan parameter &service= jika serviceType diisi (contoh: untuk charter)
         const url = serviceType 
             ? `${resolvedBaseUrl}?region=${encoded}&service=${serviceType}` 
             : `${resolvedBaseUrl}?region=${encoded}`;
@@ -29,7 +27,6 @@ function buildRegionLinks(regions, baseUrl, serviceType = null) {
 function buildDesktopCekOngkirMenu(regions, routes) {
     const regionLinks = buildRegionLinks(regions, routes.cekOngkirUrl);
     
-    // 3. Panggil fungsi dengan tambahan parameter 'charter'
     const charterLinks = buildRegionLinks(regions, routes.cekOngkirUrl, 'charter'); 
     
     const kendaraanLinks = `
@@ -92,7 +89,6 @@ function renderCekOngkirMenus(regions) {
             <li><a href="${headerRoutes.cekOngkirUrl}?kategori=mobil" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">Pengiriman Mobil</a></li>
         `;
         
-        // 4. Pisahkan URL untuk Darat dan URL untuk Charter pada menu Mobile
         const regionListHTML = regions.length 
             ? regions.map((region) => `<li><a href="${headerRoutes.cekOngkirUrl}?region=${encodeURIComponent(region.slug)}" class="block rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-[#001f5c]">${region.name}</a></li>`).join('') 
             : '<li><span style="display:block;padding:0.75rem 1rem 0.75rem 3.25rem;color:#94a3b8;">Belum ada wilayah.</span></li>';
@@ -159,7 +155,6 @@ function initCekOngkirTable() {
     const searchParams = new URLSearchParams(window.location.search);
     const regionSlug = presetRegion || searchParams.get('region');
     
-    // Ambil jenis layanan dari URL (darat, udara, motor, mobil, charter)
     const serviceType = searchParams.get('kategori') || searchParams.get('jalur') || searchParams.get('service') || 'darat_laut';
     
     const tableBody = document.getElementById('rate-table-body');
@@ -216,7 +211,6 @@ function initCekOngkirTable() {
         tableBody.innerHTML = slice.map((rate) => {
             const priceCell = rate.price ? rate.price : '<a href="https://wa.me/6281180892925" target="_blank" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white no-underline">Hubungi Kami</a>';
             
-            // Kolom Tambahan Dinamis
             let extraCol = '';
             if (serviceType === 'motor' || serviceType === 'mobil') {
                 extraCol = `<td class="px-5 py-4 text-slate-900 whitespace-nowrap">${rate.specific_details?.vehicle_type || '-'}</td>`;
@@ -266,7 +260,6 @@ function initCekOngkirTable() {
 
     setLoading('Memuat data tarif...');
     
-    // Gabungkan Parameter ke URL API
     const fetchUrl = new URL(apiUrl, window.location.origin);
     if (regionSlug) fetchUrl.searchParams.append('region_slug', regionSlug);
     fetchUrl.searchParams.append('service_type', serviceType);

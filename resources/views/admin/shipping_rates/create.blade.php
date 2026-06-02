@@ -56,10 +56,10 @@
                 </div>
             </div>
 
-            <div class="flex justify-end gap-3 mt-4">
-                <a href="{{ route('admin.shipping-rates.index') }}" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg">Batal</a>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Simpan Tarif</button>
-            </div>
+           <div class="actions" style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+    <a href="{{ route('admin.shipping-rates.index') }}" class="btn ghost">Batal</a>
+    <button type="submit" class="btn">Simpan Tarif</button>
+</div>
         </form>
     </div>
 </div>
@@ -81,7 +81,6 @@ function toggleFields() {
         fleetField.style.display = 'none';
     }
 }
-// Jalankan saat halaman dimuat
 document.addEventListener('DOMContentLoaded', toggleFields);
 </script>
 @endsection

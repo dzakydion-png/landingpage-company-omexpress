@@ -120,7 +120,7 @@ class HomeController extends Controller
      * Halaman Pengiriman Alat Berat
      */
     public function pengirimanAlatBerat() {
-    return view('home_company.layanan.alat_berat'); // Pastikan file ini ada
+    return view('home_company.layanan.alat_berat'); 
 }
 
     /**
@@ -198,7 +198,6 @@ class HomeController extends Controller
         $images = [];
         $videos = [];
 
-        // Allowed image extensions
         $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $videoExtensions = ['mp4', 'webm', 'mov'];
 
@@ -211,7 +210,6 @@ class HomeController extends Controller
                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                 $filePath = 'assets2/' . $file;
 
-                // Categorize based on filename
                 $category = 'lainnya';
                 $title = pathinfo($file, PATHINFO_FILENAME);
 

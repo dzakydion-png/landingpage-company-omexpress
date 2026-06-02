@@ -85,7 +85,6 @@ function toggleFields() {
         fleetField.style.display = 'none';
     }
 }
-// Set status dropdown saat halaman edit dibuka
 document.addEventListener('DOMContentLoaded', toggleFields);
 </script>
 @endsection
